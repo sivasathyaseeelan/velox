@@ -6,17 +6,25 @@ import { useWallet } from "./context/index";
 const ConnectWallet: React.FC = () => {
   const { account, connectWallet, disconnectWallet } = useWallet();
 
+  // Function to truncate the wallet address
+  const truncateAddress = (address: string | null) => {
+    if (!address) return '';
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
+
   return (
     <div className="">
       {account ? (
         <>
-          {/* <p className="mb-2 text-green-600">Connected: {account}</p> */}
-          <button className="px-4 py-2 bg-red-500 text-white rounded" onClick={disconnectWallet}>
-            Disconnect
+          <button
+            className="px-4 py-2 border text-white rounded ml-2"
+            onClick={disconnectWallet}
+          >
+            {truncateAddress(account)}
           </button>
         </>
       ) : (
-        <button className="px-4 py-2 bg-blue-500 text-white rounded" onClick={connectWallet}>
+        <button className="px-4 py-2 border text-white rounded" onClick={connectWallet}>
           Connect Wallet
         </button>
       )}
