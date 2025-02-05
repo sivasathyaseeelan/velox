@@ -13,12 +13,15 @@
     "@langchain/groq": "^0.1.3",
     "@langchain/langgraph": "^0.2.44",
     "@langchain/openai": "^0.4.2",
+    "@nillion/client-vms": "^0.2.1",
+    "@nillion/client-wasm": "^0.2.0",
     "@wardenprotocol/warden-langchain": "^0.0.7",
     "arima": "^0.2.5",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
-    "ethers": "5",
+    "ethers": "^6.13.5",
     "langchain": "^0.3.15",
+    "nillion-sv-wrappers": "^1.0.7",
     "timeseries-analysis": "^1.0.12"
   }
 }

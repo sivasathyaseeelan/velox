@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LLM Crypto Decision Output Collection",
+  "description": "Schema for storing an array of outputs from an LLM detailing a cryptocurrency operation decision.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "_id": {
+        "type": "string",
+        "format": "uuid",
+        "coerce": true
+      },
+      "cryptocurrency_symbol": {
+        "type": "string",
+        "minLength": 1,
+        "description": "The symbol of the cryptocurrency (e.g., BTC, ETH)."
+      },
+      "decision": {
+        "type": "string",
+        "enum": ["withdraw", "deposit"],
+        "description": "The decision taken for the cryptocurrency operation."
+      },
+      "current_amount": {
+        "type": "number",
+        "description": "The current amount held in the cryptocurrency account."
+      },
+      "reason": {
+        "type": "string",
+        "minLength": 1,
+        "description": "The explanation for why the decision was made."
+      }
+    },
+    "required": ["cryptocurrency_symbol", "decision", "current_amount", "reason"]
+  }
+}

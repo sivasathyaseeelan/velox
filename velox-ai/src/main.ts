@@ -21,15 +21,14 @@ const CONFIG = {
 	HUGGINGFACE_MODEL: "finiteautomata/bertweet-base-sentiment-analysis",
 };
 
-
 // ARIMA model configuration (mock data for demonstration)
-const arimaConfig = {
+export const arimaConfig = {
 	p: 0.5,  // Autoregressive terms
 	d: 1,  // Differencing
 	q: 1   // Moving average terms
 };
 
-const TOKENS = {
+export const TOKENS = {
 	"Ethereum": "ETH",
 	// "USD Coin": "USDC",
 	// "Tether": "USDT",
@@ -46,9 +45,8 @@ const TOKENS = {
 	// "Balancer": "BAL"
 };
 
-
 // Token ABI
-const TOKEN_ABI = [
+export const TOKEN_ABI = [
 	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
@@ -333,7 +331,7 @@ const retry = async <T>(fn: () => Promise<T>, retries: number = CONFIG.MAX_RETRI
 
 // TokenManagerAgent class (same as your initial implementation)
 // Adding this class as it is from your provided code, just skipping detailed implementation for brevity
-class TokenManagerAgent {
+export class TokenManagerAgent {
 	private contract: ethers.Contract;
 	private sentimentAgent: SentimentAnalysisAgent;
 	private signer: ethers.Wallet;
@@ -384,7 +382,7 @@ class TokenManagerAgent {
 }
 
 // Trading System Integration with LLM
-class TradingSystem {
+export class TradingSystem {
 	private tokenManager: TokenManagerAgent;
 	private priceFeed: PriceFeedAgent;
 	private model: ChatGroq;
@@ -570,14 +568,14 @@ class TradingSystem {
 }
 
 // Initialize agents
-const sentimentAgent = new SentimentAnalysisAgent();
-const arimaPredictionAgent = new ARIMAPredictionAgent(arimaConfig);
-const tokenManager = new TokenManagerAgent(
+ const sentimentAgent = new SentimentAnalysisAgent();
+ const arimaPredictionAgent = new ARIMAPredictionAgent(arimaConfig);
+ const tokenManager = new TokenManagerAgent(
 	CONFIG.CONTRACT_ADDRESS,
-	new ethers.Wallet(CONFIG.PRIVATE_KEY, new ethers.providers.JsonRpcProvider(CONFIG.INFURA_URL)),
+	new ethers.Wallet(CONFIG.PRIVATE_KEY, new ethers.JsonRpcProvider(CONFIG.INFURA_URL)),
 	sentimentAgent
 );
 
 // Instantiate and execute TradingSystem
-const tradingSystem = new TradingSystem(tokenManager, TOKENS, arimaPredictionAgent);
+ const tradingSystem = new TradingSystem(tokenManager, TOKENS, arimaPredictionAgent);
 tradingSystem.execute();
