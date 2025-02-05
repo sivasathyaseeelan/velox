@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React from "react";
 import { useWallet } from "./context/index";
@@ -13,18 +13,19 @@ const ConnectWallet: React.FC = () => {
   };
 
   return (
-    <div className="">
+    <div>
       {account ? (
-        <>
-          <button
-            className="px-4 py-2 border text-white rounded ml-2"
-            onClick={disconnectWallet}
-          >
-            {truncateAddress(account)}
-          </button>
-        </>
+        <button
+          className="w-40 px-4 py-2 border text-white rounded text-center truncate"
+          onClick={disconnectWallet}
+        >
+          {truncateAddress(account)}
+        </button>
       ) : (
-        <button className="px-4 py-2 border text-white rounded" onClick={connectWallet}>
+        <button
+          className="w-40 px-4 py-2 border text-white rounded text-center"
+          onClick={connectWallet}
+        >
           Connect Wallet
         </button>
       )}
