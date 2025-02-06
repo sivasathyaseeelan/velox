@@ -231,12 +231,7 @@ const FormComponent = () => {
     // Deposit function
     const depositFunds = async () => {
       try {
-<<<<<<< HEAD
         fetchDeposits();
-        const contract = await getContract();
-        const tx = await contract.deposit(amount); // Assuming the amount is in ETH
-=======
->>>>>>> 4ee15be6 (contract added)
         setLoading(true);
 
         const contract = await getContract();
