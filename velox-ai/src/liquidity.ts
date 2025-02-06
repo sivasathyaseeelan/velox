@@ -777,4 +777,3 @@ const runLLMBasedSystem = async () => {
 
 // Start system
 runLLMBasedSystem().catch(console.error);
-// fetchLiquidityRates()
