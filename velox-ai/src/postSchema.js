@@ -1,6 +1,6 @@
 import { SecretVaultWrapper } from 'nillion-sv-wrappers';
-import { orgConfig } from './nillionOrgConfig';
-import schema from './schema.json' assert { type: 'json' };
+import { orgConfig } from './nillionOrgConfig.ts';
+import schema from './schema.json' with { type: 'json' };
 
 async function main() {
   try {

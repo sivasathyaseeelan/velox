@@ -4,8 +4,8 @@ import { ChatGroq } from "@langchain/groq";
 import { HumanMessage } from "@langchain/core/messages";
 import { v4 as uuidv4 } from 'uuid';
 import dotenv from 'dotenv';
-import { orgConfig } from './nillionOrgConfig.ts'
-import { SecretVaultWrapper } from './wrapper.ts'
+import { orgConfig } from './nillionOrgConfig'
+import { SecretVaultWrapper } from './wrapper'
 
 // =================== Warden Agent Kit Imports ===================
 import { WardenAgentKit } from "@wardenprotocol/warden-agent-kit-core";
@@ -20,7 +20,7 @@ dotenv.config();
 
 const SCHEMA_ID = process.env.SCHEMA_ID;
 
-const provider = new ethers.JsonRpcProvider("https://sepolia.infura.io/v3/YOUR-PRIVATE-KEY");
+const provider = new ethers.JsonRpcProvider("https://sepolia.infura.io/v3/a2e5985b83404b3ebe9ebfb7605e0af7");
 
 // Use a wallet to sign transactions
 const signer = new ethers.Wallet(process.env.PRIVATE_KEY || "", provider);
@@ -555,9 +555,11 @@ async function initializeWardenAgent() {
 			modelName: "deepseek-r1-distill-llama-70b",
 		});
 
+		console.log(process.env.PRIVATE_KEY)
+
 		const config = {
-			privateKeyOrAccount: process.env.PRIVATE_KEY
-		};
+            privateKeyOrAccount: `0x${process.env.PRIVATE_KEY}` as `0x${string}` || undefined,
+        };
 
 		const agentkit = new WardenAgentKit(config);
 		const wardenToolkit = new WardenToolkit(agentkit);
@@ -661,9 +663,7 @@ const prepareLLMInput = (data: Record<string, AssetData>): string => {
 		...
 		}
 
-	Base your answer on the basis of given details and general information
 	RETURN DECISION FOR EACH CRYPTO SYMBOL PROVIDED IN THE DATA ONLY
-	AMOUNT MUST A INTEGER VALUE
 	
 	STRICTLY FOLLOW THE OUTPUT FORMAT. DO NOT RETURN ANYTHING ELSE
 	NOTE AMOUNT SHOULD NOT EXCEED THE BALANCE OF RESPECTIVE crypto , do not violate this condition.
@@ -725,7 +725,13 @@ const runLLMBasedSystem = async () => {
 		orgConfig.orgCredentials,
 		SCHEMA_ID
 	);
+	
 	await collection.init();
+	const decryptedCollectionData = await collection.readFromNodes({});
+				console.log(
+					'Most recent records',
+					decryptedCollectionData
+				);
 	console.log("Starting Agentic System...");
 
 	const agentData: Record<string, AssetData> = await collectAgentData();
@@ -745,7 +751,7 @@ const runLLMBasedSystem = async () => {
 					{
 						cryptocurrency_symbol: token, // name will be encrypted to a $share
 						decision: temp_decision[token]["decision"], // years_in_web3 will be encrypted to a $share
-						current_amount: temp_decision[token]["amount"].toString(),
+						current_amount: temp_decision[token]["amount"],
 						reason: temp_decision[token]["reason"]
 					},
 				];
@@ -777,4 +783,3 @@ const runLLMBasedSystem = async () => {
 
 // Start system
 runLLMBasedSystem().catch(console.error);
-// fetchLiquidityRates()

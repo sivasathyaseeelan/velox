@@ -1,13 +1,13 @@
 import { ethers } from "ethers";
 import dotenv from "dotenv";
 import { HumanMessage } from "@langchain/core/messages";
-import { SentimentAnalysisAgent } from ".sentiment.ts"
-import { ARIMAPredictionAgent } from "./arima.ts"
-import { PriceFeedAgent } from "./arima.ts";
+import { SentimentAnalysisAgent } from "./sentiment"
+import { ARIMAPredictionAgent } from "./arima"
+import { PriceFeedAgent } from "./arima";
 import { ChatGroq } from "@langchain/groq";
-import { orgConfig } from './nillionOrgConfig.ts';
-import { SecretVaultWrapper } from './wrapper.ts';
-import { fetchPrice } from './eoracle.ts'
+import { orgConfig } from './nillionOrgConfig';
+import { SecretVaultWrapper } from './wrapper';
+import { fetchPrice } from './eoracle'
 
 // =================== Warden Agent Kit Imports ===================
 import { WardenAgentKit } from "@wardenprotocol/warden-agent-kit-core";
