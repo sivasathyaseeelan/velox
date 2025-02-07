@@ -749,6 +749,8 @@ const runLLMBasedSystem = async () => {
 						reason: temp_decision[token]["reason"]
 					},
 				];
+				console.log(data)
+
 				const dataWritten = await collection.writeToNodes(data);
 				const newIds = [
 					...new Set(dataWritten.map((item) => item.result.data.created).flat()),
