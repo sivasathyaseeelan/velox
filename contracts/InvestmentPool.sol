@@ -12,8 +12,13 @@ contract AIInvestmentPool is Ownable {
     IPool public Pool= IPool(0x6Ae43d3271ff6888e7Fc43Fd7321a503ff738951);
     IUniswapV2Router02 public uniswapRouter= IUniswapV2Router02(0xC532a74256D3Db42D0Bf7a0400fEFDbad7694008);
 
+    // mapping of user address to their balance
     mapping( address=> uint256) public balances;
+
+    // Current USDC token in the contract
     uint256 public totalInvestment;
+
+    // mapping of token address to their balance in contract
     mapping( address => uint256) public balanceOfToken;
     mapping( address => uint256) public isTokenPresent;
     address[] public tokens;
@@ -32,6 +37,9 @@ contract AIInvestmentPool is Ownable {
         transferOwnership(msg.sender);  // Transfer ownership to the specified address
     }
 
+
+
+    // get the estimated amount of tokens out for a given amount of token in
     function getEstimatedTokensOut(address tokenIn, address tokenOut, uint256 amountIn) public view returns (uint256) {
         address[] memory path = new address[](2);
 
@@ -43,6 +51,8 @@ contract AIInvestmentPool is Ownable {
     }
 
 
+
+    // swap tokens for tokens
     function swapTokensForTokens(address tokenIn, address tokenOut, uint256 amountIn, uint256 amountOutMin) public {
         IERC20(tokenIn).approve(address(Pool), amountIn);  
 
@@ -69,10 +79,14 @@ contract AIInvestmentPool is Ownable {
         
     }
 
+
+    // Contract balance for a specific token
     function myBalance(address token) public  view returns (uint256 amount){
         return IERC20(token).balanceOf(token);
     }
 
+
+    // Deposit USDC tokens to the contract
     function deposit(uint256 amount) public {
         require(amount > 0, "Amount must be greater than zero");
         stablecoin.transferFrom(msg.sender, address(this), amount);
@@ -82,6 +96,8 @@ contract AIInvestmentPool is Ownable {
         emit Deposited(msg.sender, amount);
     }
 
+
+    // get the net worth of the contract in USDC (profit + money deposited)
     function getContractNetWorth() public view returns (uint256){
         uint256 totalCollateralBase = poolBalance();
         totalCollateralBase+=balanceOfToken[USDC];
@@ -91,11 +107,16 @@ contract AIInvestmentPool is Ownable {
         return totalCollateralBase;
     }
 
+
+
+    // get the maximum amount of money a user can withdraw (profit + money deposited)
     function MyMoney(address user)public view returns(uint256){
         uint256 maxMoney=(balances[user]*getContractNetWorth())/(totalInvestment);
         return maxMoney;
     } 
 
+
+    // for the user to withdraw their money
     function withdraw(uint256 amount) public {
         uint256 maxMoney=(balances[msg.sender]*getContractNetWorth())/(totalInvestment);
         require(maxMoney >= amount, "Insufficient balance");
@@ -119,7 +140,7 @@ contract AIInvestmentPool is Ownable {
         emit Invested(msg.sender,amount);
     }
 
-
+    // Invested amount in the liquidity pool of aave (profit + dpeosited money)
     function poolBalance() public view returns(uint256){
         uint256 totalCollateralBase;
         uint256 totalDebtBase;
@@ -138,6 +159,7 @@ contract AIInvestmentPool is Ownable {
         emit WithdrawInvestment(msg.sender, amountA);
     }
 
+    // get the list of tokens in the contract
     function getTokens() public view returns(address[] memory){
         return tokens;
     }
