@@ -18,7 +18,7 @@
       },
       "decision": {
         "type": "string",
-        "enum": ["withdraw", "deposit"],
+        "enum": ["withdraw", "deposit", "sell", "hold", "buy"],
         "description": "The decision taken for the cryptocurrency operation."
       },
       "current_amount": {

@@ -19,7 +19,7 @@ dotenv.config();
 
 
 const SCHEMA_ID = process.env.SCHEMA_ID;
-
+const USDC_TOKEN_ADDRESS = "0x94a9D9AC8a22534E3FaCa9F4e7F2E2cf85d5E4C8";
 const provider = new ethers.JsonRpcProvider("https://sepolia.infura.io/v3/a2e5985b83404b3ebe9ebfb7605e0af7");
 
 // Use a wallet to sign transactions
@@ -518,7 +518,8 @@ const contractABI = [
 
 interface AssetData {
 	crypto_name: string;
-	balance : number;
+	current_deposited_amount : number;
+	current_account_balance : number
 	totalLiquidity: string;
 	availableLiquidity: string;
 	utilizationRate: string;
@@ -597,14 +598,29 @@ async function llmCall( message: HumanMessage) {
 	return resultContent;
 }
 
-async function getTokenBalance(id:string) {
+async function getPoolBalance(id:string) {
 	const tx = await poolContract.poolBalance();
 	console.log(tx)
-	return Math.ceil(Number(tx)/Number(10000000));
+	return Math.ceil(Number(tx)/Number(1000000));
+}
+
+async function getTokenBalance(id:string) {
+	const tx = await poolContract.balanceOfToken(USDC_TOKEN_ADDRESS);
+	console.log(tx)
+	return Math.ceil(Number(tx)/Number(1000000));
 }
 
 const fetchLiquidityRates = async () => {
-	const aaveRates = await fetch(`https://aave-api-v2.aave.com/data/liquidity/v1?poolId=0xb53c1a33016b2dc2ff3653530bff1848a515c8c5&date=03-10-2024`).then(res => res.json());
+	const today = new Date();
+
+	// Subtract one day to get yesterday's date
+	today.setDate(today.getDate() - 2);
+
+	const formattedDate = `${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}-${today.getFullYear()}`;
+
+	// Aave API URL with dynamic date
+	const apiUrl = `https://aave-api-v2.aave.com/data/liquidity/v1?poolId=0xb53c1a33016b2dc2ff3653530bff1848a515c8c5&date=${formattedDate}`;
+	const aaveRates = await fetch(apiUrl).then(res => res.json());
 	const data_Structure = {} as Record<string, AssetData>;
 
 	let i = 0;
@@ -619,7 +635,8 @@ const fetchLiquidityRates = async () => {
 		// Creating a structured object with key metrics for each symbol
 		data_Structure[symbol] = {
 			totalLiquidity: crypto["totalLiquidity"],
-			balance : await getTokenBalance(crypto["id"]),
+			current_account_balance : await getTokenBalance(crypto["id"]),
+			current_deposited_amount : await getPoolBalance(crypto["id"]),
 			availableLiquidity: crypto["availableLiquidity"],
 			utilizationRate: crypto["utilizationRate"],
 			variableBorrowRate: crypto["variableBorrowRate"],
@@ -655,7 +672,9 @@ const prepareLLMInput = (data: Record<string, AssetData>): string => {
 	You are provided with the data, where each cryptocurrency symbol is the key, and its value is another dict that contains the financial data. 
 	For each cryptocurrency symbol given in the data , provide a decision to withdraw or deposit, the exact amount to be depost/withdraw, along with the reason, in the format given below:
     You can hold the position if you are unsure what to do , and want some time to see market activity
-	
+	In the given data current_Account_balance is the maximum amount that you have currently for investing
+	AND current_deposited_account is the amount that you have deposited already either you can hold it or withdraw it
+	IN CASE OF HOLD AMOUNT SHOULD BE '0'
 	
 	#OUTPUT FORMAT : 
 	'''
@@ -667,7 +686,7 @@ const prepareLLMInput = (data: Record<string, AssetData>): string => {
 
 	RETURN DECISION FOR EACH CRYPTO SYMBOL PROVIDED IN THE DATA ONLY
 	STRICTLY FOLLOW THE OUTPUT FORMAT. DO NOT RETURN ANYTHING ELSE
-	NOTE AMOUNT SHOULD NOT EXCEED THE BALANCE OF RESPECTIVE crypto , do not violate this condition.
+	NOTE IF WITHDRAWING AMOUNT SHOULD NOT EXCEED 'CURRENT_DEPOSITED_AMOUNT' , AND IF INVESTING THEN SHOULD NOT ESCEED 'CURRENT_ACCOUNT_BALANCE' , do not violate this condition.
 	AMOUNT SHOULD BE A INTEGER VALUE
 	
 	##INPUT
@@ -678,11 +697,11 @@ const prepareLLMInput = (data: Record<string, AssetData>): string => {
 // // Get LLM decision
 const getLLMDecision = async ( agentData: Record<string, AssetData>) => {
 	const inputText = prepareLLMInput(agentData);
+	console.log(inputText)
 	const message = new HumanMessage(inputText);
 	const response = await llmCall( message);
 
 	const responseContent = response.toString();
-	console.log(responseContent)
 	const responseParts = responseContent.split("</think>");
 	const rawResponse = responseParts.length > 1 ? responseParts[responseParts.length - 1] : responseContent;
 
@@ -708,14 +727,14 @@ const collectAgentData = async (): Promise<Record<string, AssetData>> => {
 
 // Deposit function
 const depositFunds = async (amount: Number) => {
-	  const tx = await poolContract.invest(amount);
+	  const tx = await poolContract.invest(Number(amount)*Number(1000000));
 	  await tx.wait();
 	console.log(`Deposited ${Number(amount)*Number(1000000)} USDT`);
 };
 
 // Withdraw function
 const withdrawFunds = async (amount: Number) => {
-	  const tx = await poolContract.withdrawInvest(amount);
+	  const tx = await poolContract.withdrawInvest(Number(amount)*Number(1000000));
 	  await tx.wait();
 	console.log(`Withdrawn ${amount} ETH`);
 };
@@ -739,9 +758,7 @@ const runLLMBasedSystem = async () => {
 	const agentData: Record<string, AssetData> = await collectAgentData();
 
 	// Get decision from LLM
-	console.log("HERE")
 	let decision = await getLLMDecision( agentData);
-	console.log(decision)
 	const jsonMatch = decision.match(/\{[\s\S]*\}/);
 
 	if (jsonMatch) {
@@ -749,7 +766,6 @@ const runLLMBasedSystem = async () => {
 			decision = JSON.parse(jsonMatch[0]);
 			const temp_decision = JSON.parse(jsonMatch[0]); // Parse it into an object
 			for (const token in temp_decision) {
-				console.log(temp_decision[token])
 				await handleLLMDecision(temp_decision[token]);
 				const data = [
 					{
