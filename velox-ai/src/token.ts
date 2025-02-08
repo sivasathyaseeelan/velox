@@ -599,14 +599,14 @@ class TokenManagerAgent {
 
 	async depositToken(tokenAddress: string, amount: string) {
 		// Example deposit logic (you may need to adjust for your contract)
-		const tx = await poolContract.deposit(Number(amount)*Number(1000000) );
+		const tx = await poolContract.deposit(Number(amount)*Number(10000000));
 		await tx.wait();
 		console.log(`Deposited ${amount} USDT`);
 		console.log(`Depositing ${amount} for ${tokenAddress}`);
 	}
 
 	async withdrawToken(tokenAddress: string, amount: string) {
-		const tx = await this.contract.withdrawToken( Number(amount)*Number(1000000));
+		const tx = await this.contract.withdraw( Number(amount)*Number(10000000));
 		await tx.wait();
 		console.log(`Withdrew ${amount} for ${tokenAddress}`);
 	}
@@ -703,9 +703,10 @@ class TradingSystem {
 
         inputDict += `
 Based on these conditions, which tokens should we trade and in what direction? Keep in mind the predicted values based on statistical models.
+PREDICTED PRICE IS FROM THE PREDICTION OF ARIMA MODEL , DO NOT RELY ON THAT COMPELTELY
 #OUTPUT FORMAT : 
             {
-                'crypto_name' : { 'action' : 'buy/sell', 'amount': 'value in range 1 to 100', 'reason' : 'logic behind your decision'},
+                'crypto_name' : { 'action' : 'buy/sell', 'amount': 'value in range 1 to 10', 'reason' : 'logic behind your decision'},
                 ...
             }
 
