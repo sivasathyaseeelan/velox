@@ -600,7 +600,7 @@ async function llmCall( message: HumanMessage) {
 async function getTokenBalance(id:string) {
 	const tx = await poolContract.poolBalance();
 	console.log(tx)
-	return Number(tx);
+	return Math.ceil(Number(tx)/Number(10000000));
 }
 
 const fetchLiquidityRates = async () => {
@@ -654,19 +654,21 @@ const prepareLLMInput = (data: Record<string, AssetData>): string => {
     What is the best course of action for maximizing yield based on these conditions? Should I deposit or withdraw assets?
 	You are provided with the data, where each cryptocurrency symbol is the key, and its value is another dict that contains the financial data. 
 	For each cryptocurrency symbol given in the data , provide a decision to withdraw or deposit, the exact amount to be depost/withdraw, along with the reason, in the format given below:
-    
+    You can hold the position if you are unsure what to do , and want some time to see market activity
 	
 	
 	#OUTPUT FORMAT : 
+	'''
 	{
-		"crypto_name" : { "decision" : "withdraw/deposit" ,  amount : "exact number to deposit/withdraw", "reason" : "logic behind your decision"},
+		"crypto_name" : { "decision" : "withdraw/deposit/hold" ,  amount : "exact number to deposit/withdraw", "reason" : "logic behind your decision"},
 		...
-		}
+	}
+	'''
 
 	RETURN DECISION FOR EACH CRYPTO SYMBOL PROVIDED IN THE DATA ONLY
-	
 	STRICTLY FOLLOW THE OUTPUT FORMAT. DO NOT RETURN ANYTHING ELSE
 	NOTE AMOUNT SHOULD NOT EXCEED THE BALANCE OF RESPECTIVE crypto , do not violate this condition.
+	AMOUNT SHOULD BE A INTEGER VALUE
 	
 	##INPUT
 	${JSON.stringify(data, null, 2)}
@@ -692,9 +694,9 @@ const handleLLMDecision = async (decision: any) => {
 	console.log(decision)
 
 	if (decision["decision"] == "deposit") {
-		await depositFunds(decision["amount"]); // Deposits 0.002 ETH
+		await depositFunds(Number(decision["amount"])); // Deposits 0.002 ETH
 	} else if (decision["decision"] == "withdraw") {
-		await withdrawFunds(decision["amount"]); // Withdraws 0.001 ETH
+		await withdrawFunds(Number(decision["amount"])); // Withdraws 0.001 ETH
 	} else {
 		console.log("No action needed.");
 	}
@@ -705,14 +707,14 @@ const collectAgentData = async (): Promise<Record<string, AssetData>> => {
 };
 
 // Deposit function
-const depositFunds = async (amount: string) => {
+const depositFunds = async (amount: Number) => {
 	  const tx = await poolContract.invest(amount);
 	  await tx.wait();
-	console.log(`Deposited ${amount} USDT`);
+	console.log(`Deposited ${Number(amount)*Number(1000000)} USDT`);
 };
 
 // Withdraw function
-const withdrawFunds = async (amount: string) => {
+const withdrawFunds = async (amount: Number) => {
 	  const tx = await poolContract.withdrawInvest(amount);
 	  await tx.wait();
 	console.log(`Withdrawn ${amount} ETH`);
@@ -737,7 +739,9 @@ const runLLMBasedSystem = async () => {
 	const agentData: Record<string, AssetData> = await collectAgentData();
 
 	// Get decision from LLM
+	console.log("HERE")
 	let decision = await getLLMDecision( agentData);
+	console.log(decision)
 	const jsonMatch = decision.match(/\{[\s\S]*\}/);
 
 	if (jsonMatch) {
@@ -751,7 +755,7 @@ const runLLMBasedSystem = async () => {
 					{
 						cryptocurrency_symbol: token, // name will be encrypted to a $share
 						decision: temp_decision[token]["decision"], // years_in_web3 will be encrypted to a $share
-						current_amount: temp_decision[token]["amount"],
+						current_amount: temp_decision[token]["amount"]*1000000,
 						reason: temp_decision[token]["reason"]
 					},
 				];

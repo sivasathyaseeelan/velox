@@ -13,9 +13,11 @@
     "axios": "^1.7.9",
     "ethers": "^6.13.5",
     "next": "15.1.6",
+    "nillion-sv-wrappers": "^1.0.9",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-spinners": "^0.15.0"
+    "react-spinners": "^0.15.0",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

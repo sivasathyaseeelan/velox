@@ -1145,7 +1145,7 @@ async function initializeWardenAgent() {
         });
 
         const config = {
-            privateKeyOrAccount: CONFIG.PRIVATE_KEY
+            privateKeyOrAccount: `0x${process.env.PRIVATE_KEY}` as `0x${string}` || undefined,
         };
 
         const agentkit = new WardenAgentKit(config);
