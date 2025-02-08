@@ -341,45 +341,56 @@ const FormComponent = () => {
   };
 
   return (
-    <div 
-    className="flex flex-col items-center justify-between bg-gray-900 p-6 rounded-lg shadow-lg w-96 h-96"
-    >
-		{loading && <Loader />}
+<div className="flex flex-col items-center bg-gray-900 p-6 rounded-xl shadow-lg w-[400px] space-y-6">
+    {loading && <Loader />}
 
-        <div className="flex justify-center items-center bg-gray-600 w-full rounded">
-            <button className={`text-white text-xl font-bold h-full w-full py-2 rounded ${deposit ? "bg-blue-500" : "hover:bg-gray-700"}`} onClick={()=>{setDeposit(true)}}>Deposit</button>
-            <button className={`text-white text-xl font-bold h-full w-full py-2 rounded ${!deposit ? "bg-blue-500" : "hover:bg-gray-700"}`} onClick={()=>{setDeposit(false)}}>Withdraw</button>
-        </div>
-        <form
-        onSubmit={handleDepositWithdraw}
-        className="flex flex-col items-center justify-between space-y-4 bg-gray-900 p-6 rounded-lg shadow-lg w-96 h-96"
+    {/* Toggle Buttons */}
+    <div className="flex justify-between items-center bg-gray-800 w-full rounded-lg p-1">
+        <button 
+            className={`text-white text-lg font-bold w-1/2 py-3 rounded-lg transition-all ${
+                deposit ? "bg-blue-500" : "hover:bg-gray-700"
+            }`} 
+            onClick={() => setDeposit(true)}
         >
+            Deposit
+        </button>
+        <button 
+            className={`text-white text-lg font-bold w-1/2 py-3 rounded-lg transition-all ${
+                !deposit ? "bg-blue-500" : "hover:bg-gray-700"
+            }`} 
+            onClick={() => setDeposit(false)}
+        >
+            Withdraw
+        </button>
+    </div>
 
+    {/* Form */}
+    <form 
+        onSubmit={handleDepositWithdraw} 
+        className="flex flex-col items-center space-y-4 w-full"
+    >
         {/* Input Box */}
         <input
             type="text"
             value={amount}
             onChange={handleChange}
             onKeyDown={(e) => {
-            if (e.key === "e" || e.key === "+" || e.key === "-") {
-                e.preventDefault();
-            }
+                if (["e", "+", "-", " "].includes(e.key)) e.preventDefault();
             }}
-            className="w-full p-3 border border-gray-500 rounded  bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-4 border border-gray-600 rounded-lg bg-gray-800 text-white text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter amount in USDC"
         />
 
-        {/* Buy Button */}
+        {/* Submit Button */}
         <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg text-lg"
         >
-            {
-                deposit ? "Deposit" : "Withdraw"
-            }
+            {deposit ? "Deposit" : "Withdraw"}
         </button>
-        </form>
-    </div>
+    </form>
+</div>
+
   );
 };
 

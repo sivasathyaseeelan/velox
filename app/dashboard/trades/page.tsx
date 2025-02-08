@@ -1,9 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DashboardNavbar from "@/components/DashboardNavbar";
 import { useWallet } from "@/components/context/index";
-import { useEffect, useState } from "react";
 
 const fetchData = async () => {
   try {
@@ -44,42 +43,60 @@ export default function Page() {
       <div className={`flex flex-1 flex-col items-center ${account ? "justify-start" : "justify-center"} w-full p-6`}>
         {account ? (
           <div className="w-full max-w-4xl">
-            <h2 className="text-xl font-semibold text-center mb-4">Trades</h2>
-            <div className="overflow-x-auto">
-            <table className="min-w-full border-collapse border border-gray-200">
-                <thead>
-                  <tr className="bg-gray-700">
-                    <th className="border p-2">Asset Class</th>
-                    <th className="border p-2">Symbol</th>
-                    <th className="border p-2">Amount</th>
-                    <th className="border p-2">Decision</th>
+            <h2 className="text-xl font-semibold text-gray-200 text-center mb-4">Trades</h2>
+            <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <table className="w-full text-sm text-center text-gray-300">
+              <thead className="text-xs text-gray-200 uppercase bg-gray-700">
+                  <tr>
+                    <th className="px-6 py-3 w-1/4">Asset Class</th>
+                    <th className="px-6 py-3 w-1/4">Symbol</th>
+                    <th className="px-6 py-3 w-1/4">Amount</th>
+                    <th className="px-6 py-3 w-1/4">Decision</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map((item) => (
-                    <React.Fragment key={item._id}>
-                      <tr
-                        className="cursor-pointer hover:bg-gray-500 transition"
-                        onClick={() => toggleRow(item._id)}
-                      >
-                        <td className="border p-2">
-                          {["deposit", "withdraw"].includes(item.decision)
-                            ? "Liquidity Pool"
-                            : "Token"}
-                        </td>
-                        <td className="border p-2">{item.cryptocurrency_symbol}</td>
-                        <td className="border p-2">{item.current_amount}</td>
-                        <td className="border p-2 capitalize">{item.decision}</td>
-                      </tr>
-                      {expandedRow === item._id && (
-                        <tr>
-                          <td colSpan={4} className="border p-2 bg-gray-500 text-sm">
-                            <strong>Reason:</strong> {item.reason}
+                  {data.length > 0 ? (
+                    data.map((item) => (
+                      <React.Fragment key={item._id}>
+                        <tr
+                          className="bg-gray-900 border-b border-gray-700 hover:bg-gray-700 transition cursor-pointer"
+                          onClick={() => toggleRow(item._id)}
+                        >
+                          <td className="px-6 py-4">
+                            {["deposit", "withdraw"].includes(item.decision) ? (
+                              <span className="text-green-400">Liquidity Pool</span>
+                            ) : (
+                              <span className="text-blue-400">Token</span>
+                            )}
+                          </td>
+                          <td className="px-6 py-4">{item.cryptocurrency_symbol}</td>
+                          <td className="px-6 py-4 text-gray-300 text-center">
+                                    {Number(item.current_amount).toLocaleString()} USDC
+                          </td>
+                          <td className="px-6 py-4 capitalize">
+                            {item.decision === "withdraw" ? (
+                              <span className="text-red-400">Withdraw</span>
+                            ) : (
+                              <span className="text-green-400">Deposit</span>
+                            )}
                           </td>
                         </tr>
-                      )}
-                    </React.Fragment>
-                  ))}
+                        {expandedRow === item._id && (
+                          <tr className="bg-gray-800">
+                            <td colSpan={4} className="px-6 py-4 text-gray-400 text-sm">
+                              <strong>Reason:</strong> {item.reason}
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={4} className="text-center p-4 text-gray-400">
+                        No trades found
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

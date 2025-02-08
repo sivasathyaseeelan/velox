@@ -13,20 +13,20 @@ const DashboardNavbar = () => {
     <nav className="w-full text-white p-4 shadow-lg">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo / Title */}
-        <h1 className="text-5xl font-bold">velox</h1>
+        <h1 className="text-4xl font-bold">velox</h1>
 
         {/* Navigation Links */}
         <div className="flex space-x-6">
           <NavLink href="/dashboard" pathname={pathname}>
             Overview
           </NavLink>
-          <NavLink href="/dashboard/deposits" pathname={pathname}>
-            Deposits
+          <NavLink href="/dashboard/orders" pathname={pathname}>
+            Orders
           </NavLink>
           <NavLink href="/dashboard/trades" pathname={pathname}>
             Trades
           </NavLink>
-          <ConnectWallet />
+          <ConnectWallet/>
         </div>
       </div>
     </nav>
