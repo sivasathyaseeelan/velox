@@ -8,7 +8,7 @@ export default function Page() {
   const { account } = useWallet();
   const [transactions, setTransactions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const transactionsPerPage = 15;
+  const transactionsPerPage = 10;
 
   const fetchData = async () => {
     try {
@@ -81,17 +81,20 @@ export default function Page() {
 <div className="w-full h-screen text-white flex flex-col">
   <div className="bg-black bg-opacity-50 w-full h-full flex flex-col">
     <DashboardNavbar />
-    <div className={`flex flex-1 flex-col items-center ${account ? "justify-start" : "justify-center"} w-full p-6`}>
+    <div className={`flex flex-1 flex-col items-center ${account ? "justify-start" : "justify-center"} w-full`}>
       {account ? (
         <div className="w-full max-w-4xl p-6 rounded-lg">
-          <h2 className="text-xl font-semibold text-center mb-4">Transaction History</h2>
+            <h2 className="text-xl font-semibold text-gray-200 text-center mb-4 flex items-center justify-center gap-2">
+              Orders
+            </h2>
+          {/* <h2 className="text-xl font-semibold text-center mb-4">T</h2> */}
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table className="w-full text-sm text-center text-gray-300">
               <thead className="text-xs text-gray-200 uppercase bg-gray-700">
                 <tr>
                   <th className="px-6 py-3 w-1/5">Type</th>
                   <th className="px-6 py-3 w-1/5">Amount</th>
-                  <th className="px-6 py-3 w-1/5">Block Number</th>
+                  <th className="px-6 py-3 w-full">Block Number</th>
                   <th className="px-6 py-3 w-full">Timestamp</th>
                   <th className="px-6 py-3 w-1/5">Transaction ID</th>
                 </tr>
@@ -107,20 +110,20 @@ export default function Page() {
                           <span className="text-green-400">Deposit</span>
                         )}
                       </td>
-                      <td className="px-6 py-4">{Number(tx.amount) / 1000000} USDC</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{Number(tx.amount) / 1000000} USDC</td>
                       <td className="px-6 py-4">{tx.blockNumber}</td>
-                      <td className="px-6 py-4">{new Date(tx.blockTimestamp * 1000).toLocaleString()}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{new Date(tx.blockTimestamp * 1000).toLocaleString()}</td>
                       <td className="px-6 py-4 w-48 whitespace-nowrap text-center">
                         <div className="flex items-center justify-between space-x-2">
-                          <span className="truncate">{shortenTxId(tx.id)}</span>
+                          <span className="truncate">{shortenTxId(tx.id.slice(0, -8))}</span>
                           <button
-                            onClick={() => copyToClipboard(tx.id)}
+                            onClick={() => copyToClipboard(tx.id.slice(0, -8))}
                             className="text-gray-400 hover:text-gray-200"
                           >
                             📋
                           </button>
                           <a
-                            href={`https://sepolia.etherscan.io/tx/${tx.id}`}
+                            href={`https://sepolia.etherscan.io/tx/${tx.id.slice(0, -8)}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-400 hover:underline"

@@ -23,6 +23,8 @@ export default function Page() {
   const { account } = useWallet();
   const [data, setData] = useState<any[]>([]);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     if (account) {
@@ -36,6 +38,9 @@ export default function Page() {
     setExpandedRow(expandedRow === id ? null : id);
   };
 
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const paginatedData = data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   return (
     <div className="w-full h-screen bg-cover bg-center flex flex-col">
       <DashboardNavbar />
@@ -43,10 +48,12 @@ export default function Page() {
       <div className={`flex flex-1 flex-col items-center ${account ? "justify-start" : "justify-center"} w-full p-6`}>
         {account ? (
           <div className="w-full max-w-4xl">
-            <h2 className="text-xl font-semibold text-gray-200 text-center mb-4">Trades</h2>
+            <h2 className="text-xl font-semibold text-gray-200 text-center mb-4 flex items-center justify-center gap-2">
+              LLM Trades
+            </h2>
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table className="w-full text-sm text-center text-gray-300">
-              <thead className="text-xs text-gray-200 uppercase bg-gray-700">
+              <table className="w-full text-sm text-center text-gray-300">
+                <thead className="text-xs text-gray-200 uppercase bg-gray-700">
                   <tr>
                     <th className="px-6 py-3 w-1/4">Asset Class</th>
                     <th className="px-6 py-3 w-1/4">Symbol</th>
@@ -55,8 +62,8 @@ export default function Page() {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.length > 0 ? (
-                    data.map((item) => (
+                  {paginatedData.length > 0 ? (
+                    paginatedData.map((item) => (
                       <React.Fragment key={item._id}>
                         <tr
                           className="bg-gray-900 border-b border-gray-700 hover:bg-gray-700 transition cursor-pointer"
@@ -71,7 +78,7 @@ export default function Page() {
                           </td>
                           <td className="px-6 py-4">{item.cryptocurrency_symbol}</td>
                           <td className="px-6 py-4 text-gray-300 text-center">
-                                    {Number(item.current_amount).toLocaleString()} USDC
+                            {Number(item.current_amount)/1000000} USDC
                           </td>
                           <td className="px-6 py-4 capitalize">
                             {item.decision === "withdraw" ? (
@@ -99,6 +106,23 @@ export default function Page() {
                   )}
                 </tbody>
               </table>
+            </div>
+            <div className="flex justify-between items-center mt-4">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="px-4 py-2 bg-gray-700 text-gray-200 rounded disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <span className="text-gray-300">Page {currentPage} of {totalPages}</span>
+              <button
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 bg-gray-700 text-gray-200 rounded disabled:opacity-50"
+              >
+                Next
+              </button>
             </div>
           </div>
         ) : (
