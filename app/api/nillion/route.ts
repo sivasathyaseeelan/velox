@@ -4,7 +4,7 @@ import { SecretVaultWrapper } from '../../../velox-ai/src/wrapper'
 
 export async function GET() {
   try {
-    const SCHEMA_ID = "99c4db06-beac-4993-8085-64b9f6174dd9";
+    const SCHEMA_ID = "37452371-aaee-4fc7-a09e-d2ec0b265213";
 
     const collection = new SecretVaultWrapper(
       orgConfig.nodes,

@@ -1,0 +1,8 @@
+{
+  "sepolia": {
+    "AIInvestmentPool": {
+      "address": "0x4D18D3828a22003e0432AF09c9Bd5D9d655E8643",
+      "startBlock": 7653863
+    }
+  }
+}

@@ -49,7 +49,7 @@ export default function Page() {
         {account ? (
           <div className="w-full max-w-4xl">
             <h2 className="text-xl font-semibold text-gray-200 text-center mb-4 flex items-center justify-center gap-2">
-              LLM Trades
+              Agent Trades
             </h2>
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
               <table className="w-full text-sm text-center text-gray-300">

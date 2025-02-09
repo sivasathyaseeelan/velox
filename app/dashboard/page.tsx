@@ -40,29 +40,34 @@ export default function Page() {
         const provider = new ethers.BrowserProvider(window.ethereum);
         const contract = await getContract();
 
-        // Fetch contract values
+        // current networth
         const netWorth = await contract.getContractNetWorth();
         const netWorthEth = ethers.formatUnits(netWorth.toString(), 6); // Convert to USDC
         
+        // total pool amount
         const totalInvestment = await contract.totalInvestment();
         const totalInvestmentEth = ethers.formatUnits(totalInvestment.toString(), 6); // Convert to USDC
 
+        // current value of the user deposition
         const userDeposition = await contract.MyMoney(account);
         const userDepositionEth = ethers.formatUnits(userDeposition.toString(), 6); // Convert to USDC
 
+        // 
         const totalBalance = await contract.balances(account);
         const totalBalanceEth = ethers.formatUnits(totalBalance.toString(), 6); // Convert to USDC
 
-        console.log(totalBalanceEth + " total balance");
+        // console.log(totalBalanceEth + "total balance")
+        console.log(totalBalanceEth + "total balance")
 
-        // Update state
+        // Simulating dynamic values for other fields
         const newOverview = [
-          { title: "Current Pool Value", amount: netWorthEth, currency: "USDC", value: `` },
-          { title: "Total Pool Depositions", amount: totalInvestmentEth, currency: "USDC", value: `$` },
-          { title: "Current Balance", amount: userDepositionEth, currency: "USDC", value: `$$` },
-          { title: "Your Despositions", amount: totalBalanceEth, currency: "USDC", value: `` },
+          { title: "Current Pool Value", amount: netWorthEth, currency: "USDC", value: ``},
+          { title: "Total Pool Depositions", amount: totalInvestmentEth, currency: "USDC", value: `$`},
+          { title: "Current Balance", amount: userDepositionEth, currency: "USDC", value: `$$`,},
+          { title: "Your Despositions", amount: totalBalanceEth, currency: "USDC", value: ``},
         ];
-
+        
+        // console.log("Fetched data:", netWorthEth);
         setOverview(newOverview);
       } catch (error) {
         console.error("Error fetching contract data:", error);
@@ -86,10 +91,7 @@ export default function Page() {
             <div className="flex flex-1 items-center justify-center w-[50%] ml-16">
               <div className="flex flex-wrap gap-4 justify-center p-6">
                 {overview.map((data, index) => (
-                  <div 
-                    key={index} 
-                    className="bg-gray-900 text-white p-6 rounded-lg w-[40%] border border-gray-700 shadow-lg transition-all duration-300 hover:border-transparent hover:shadow-none"
-                  >
+                  <div key={index} className="bg-gray-900 text-white p-6 rounded-lg w-[40%]">
                     <div className="text-white-400 text-lg">{data.title}</div>
                     <div className="text-2xl font-semibold mt-1">
                       {data.amount} <span className="text-lg text-white-400">USDC</span>

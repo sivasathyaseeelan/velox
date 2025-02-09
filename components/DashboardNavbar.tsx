@@ -10,11 +10,10 @@ const DashboardNavbar = () => {
   const pathname = usePathname();
 
   return (
-    <nav className="w-full text-white p-4 shadow-lg">
+    <nav className="w-full text-white p-4">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo / Title */}
-        <h1 className="text-4xl font-bold">velox</h1>
-
+        <h1 className="text-4xl font-bold"><NavLink href="/">velox</NavLink></h1>
         {/* Navigation Links */}
         <div className="flex space-x-6">
           <NavLink href="/dashboard" pathname={pathname}>
