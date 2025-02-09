@@ -28,11 +28,11 @@
         "description": "The decision taken for the cryptocurrency operation."
       },
       "current_amount": {
-        "type": "number",
+        "type": "object",
         "description": "The current amount held in the cryptocurrency account.",
         "properties": {
           "$share": {
-            "type": "string"
+            "type": "array"
           }
         },
         "required": [
