@@ -599,14 +599,16 @@ class TokenManagerAgent {
 
 	async depositToken(tokenAddress: string, amount: string) {
 		// Example deposit logic (you may need to adjust for your contract)
-		const tx = await poolContract.deposit(Number(amount)*Number(10000000));
+		console.log(amount)
+		const tx = await poolContract.deposit(amount);
 		await tx.wait();
 		console.log(`Deposited ${amount} USDT`);
 		console.log(`Depositing ${amount} for ${tokenAddress}`);
 	}
 
 	async withdrawToken(tokenAddress: string, amount: string) {
-		const tx = await this.contract.withdraw( Number(amount)*Number(10000000));
+		console.log(Number(amount))
+		const tx = await this.contract.withdraw( Number(amount));
 		await tx.wait();
 		console.log(`Withdrew ${amount} for ${tokenAddress}`);
 	}
@@ -691,6 +693,7 @@ class TradingSystem {
             const marketPredictionCap = data.marketPredictionCap[token];
 
             inputDict += ` For Token ${token}
+  - Token Name : ${token}
   - Sentiment Analysis: ${(sentiment * 100).toFixed(2)}% positive
   - Current Price: $${price}
   - Volume: ${volume}
@@ -706,7 +709,7 @@ Based on these conditions, which tokens should we trade and in what direction? K
 PREDICTED PRICE IS FROM THE PREDICTION OF ARIMA MODEL , DO NOT RELY ON THAT COMPELTELY
 #OUTPUT FORMAT : 
             {
-                'crypto_name' : { 'action' : 'buy/sell', 'amount': 'value in range 1 to 10', 'reason' : 'logic behind your decision'},
+                'token_name' : { 'action' : 'buy/sell', 'amount': 'value in range 1 to 10', 'reason' : 'logic behind your decision'},
                 ...
             }
 
@@ -812,7 +815,7 @@ STRICTLY FOLLOW THE OUTPUT FORMAT AND DO NOT RETURN ANYTHING ELSE. Insert the to
                     await this.tokenManager.depositToken(token, amount);
                     console.log(`✅ Deposited ${amount} for ${token}`);
                 } else if (tokenDecision === "sell") {
-                    await this.tokenManager.withdrawToken(token, amount);
+                    await this.tokenManager.depositToken(token, amount);
                     console.log(`✅ Withdrawn ${amount} for ${token}`);
                 } else {
                     console.log(`⚠️ No action for ${token} -  Decision: ${tokenDecision}`);
@@ -865,6 +868,11 @@ STRICTLY FOLLOW THE OUTPUT FORMAT AND DO NOT RETURN ANYTHING ELSE. Insert the to
 				// console.log(data);
 
                 const dataWritten = await collection.writeToNodes(data);
+				const decryptedCollectionData = await collection.readFromNodes({});
+				console.log(
+					'Most recent records',
+					decryptedCollectionData
+				);
                 console.log(`✅ Trade executed and recorded for ${token}`);
             }
 
