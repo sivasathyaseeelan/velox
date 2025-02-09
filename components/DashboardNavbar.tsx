@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ConnectWallet from "./connect";
 import { useEffect, useState } from "react"
-import axios from "axios";
 
 const DashboardNavbar = () => {
   const pathname = usePathname();

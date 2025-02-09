@@ -281,46 +281,6 @@ const FormComponent = () => {
         setLoading(false);
       }
     };
-  
-    // // Fetch the updated balance after any transaction
-    // const getUpdatedBalance = async () => {
-    //   try {
-    //     const contract = await getContract();
-    //     const balance = await contract.balances(account);
-    //     setBalance(balance, 18); // Assuming the balance is in stablecoin (18 decimals)
-    //   } catch (error) {
-    //     console.error("Failed to fetch balance", error);
-    //   }
-    // };
-  
-    // // Fetch the total pool amount
-    // const getTotalPool = async () => {
-    //   try {
-    //     const contract = await getContract();
-    //     const total = await contract.totalPool();
-    //     setTotalPool(total); // Assuming the pool amount is in stablecoin (18 decimals)
-    //   } catch (error) {
-    //     console.error("Failed to fetch total pool", error);
-    //   }
-    // };
-  
-    // // Fetch the total invested amount
-    // const getInvestedAmount = async () => {
-    //   try {
-    //     const contract = await getContract();
-    //     const investedAmount = await contract.invested();
-    //     setInvested(investedAmount); // Assuming the invested amount is in stablecoin (18 decimals)
-    //   } catch (error) {
-    //     console.error("Failed to fetch invested amount", error);
-    //   }
-    // };
-  
-    // // Fetch balance, total pool, and invested amount on page load or account change
-    // useEffect(() => {
-    //     getUpdatedBalance();
-    //     getTotalPool();
-    //     getInvestedAmount();
-    // }, []);
 
   const handleDepositWithdraw = (e: React.FormEvent) => {
     e.preventDefault();

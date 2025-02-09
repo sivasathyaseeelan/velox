@@ -1,10 +1,15 @@
-## Velox: A Multi-Agent DeFi System focused on Yield Optimization
+<div align="center">
+  <img src="./assets/velox.png" alt="Velox Logo" width="200">
+</div>
+
+## Velox: AI-Driven DeFi System
 
 DeFi yield optimization is complex, requiring constant monitoring and manual intervention. 
 Velox is an AI-powered multi-agent DeFi system designed to optimize yield through dynamic token swaps, sentiment analysis, and intelligent fund redistribution across liquidity providers. By integrating Warden Protocol, Eigenlayer, Nillion, and The Graph, Velox ensures a secure, transparent, and efficient DeFi experience.
 
+
 ## Architecture
-![alt text](image.png)
+![alt text](./assets/arch.png)
 
 ## Features
 To automate the process of maximizing yields in liquidity pools analysis and make informed token buy/sell decisions, we introduce a multi-agent system. This system combines several autonomous agents, external data sources, and advanced models to assess market sentiment, perform technical analysis, and execute trades. Below are the key features we've integrated to ensure a comprehensive and efficient trading experience.

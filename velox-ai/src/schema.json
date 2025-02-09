@@ -18,12 +18,26 @@
       },
       "decision": {
         "type": "string",
-        "enum": ["withdraw", "deposit"],
+        "enum": [
+          "withdraw",
+          "deposit",
+          "sell",
+          "hold",
+          "buy"
+        ],
         "description": "The decision taken for the cryptocurrency operation."
       },
       "current_amount": {
         "type": "number",
-        "description": "The current amount held in the cryptocurrency account."
+        "description": "The current amount held in the cryptocurrency account.",
+        "properties": {
+          "$share": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "$share"
+        ]
       },
       "reason": {
         "type": "string",
@@ -31,6 +45,11 @@
         "description": "The explanation for why the decision was made."
       }
     },
-    "required": ["cryptocurrency_symbol", "decision", "current_amount", "reason"]
+    "required": [
+      "cryptocurrency_symbol",
+      "decision",
+      "current_amount",
+      "reason"
+    ]
   }
 }

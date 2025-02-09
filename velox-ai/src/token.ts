@@ -1,13 +1,13 @@
 import { ethers } from "ethers";
 import dotenv from "dotenv";
 import { HumanMessage } from "@langchain/core/messages";
-import { SentimentAnalysisAgent } from ".sentiment.ts"
-import { ARIMAPredictionAgent } from "./arima.ts"
-import { PriceFeedAgent } from "./arima.ts";
+import { SentimentAnalysisAgent } from "./sentiment"
+import { ARIMAPredictionAgent } from "./arima"
+import { PriceFeedAgent } from "./arima";
 import { ChatGroq } from "@langchain/groq";
-import { orgConfig } from './nillionOrgConfig.ts';
-import { SecretVaultWrapper } from './wrapper.ts';
-import { fetchPrice } from './eoracle.ts'
+import { orgConfig } from './nillionOrgConfig';
+import { SecretVaultWrapper } from './wrapper';
+import { fetchPrice } from './eoracle'
 
 // =================== Warden Agent Kit Imports ===================
 import { WardenAgentKit } from "@wardenprotocol/warden-agent-kit-core";
@@ -19,7 +19,7 @@ import { MemorySaver } from "@langchain/langgraph";
 dotenv.config();
 
 const CONFIG = {
-	INFURA_URL: "https://sepolia.infura.io/v3/YOUR-CONTRACT-KEY",
+	INFURA_URL: "https://sepolia.infura.io/v3/a2e5985b83404b3ebe9ebfb7605e0af7",
 	PRIVATE_KEY: process.env.PRIVATE_KEY || "YOUR-PRIVATE-KEY",
 	CONTRACT_ADDRESS: process.env.CONTRACT_ADDRESS || "YOUR-CONTRACT-ADDRESS",
 	NEWS_API_KEY: process.env.NEWS_API_KEY,
@@ -40,273 +40,10 @@ const arimaConfig = {
 };
 
 const TOKENS = {
-    "Ethereum": "ETH",
+    // "Ethereum": "ETH",
 	"USD" : "USDC",
     // "Uniswap": "UNI",
 };
-
-// // Token ABI remains the same as in your original code
-// const TOKEN_ABI = [
-// 	{
-// 		"inputs": [],
-// 		"stateMutability": "nonpayable",
-// 		"type": "constructor"
-// 	},
-// 	{
-// 		"inputs": [
-// 			{
-// 				"internalType": "address",
-// 				"name": "owner",
-// 				"type": "address"
-// 			}
-// 		],
-// 		"name": "OwnableInvalidOwner",
-// 		"type": "error"
-// 	},
-// 	{
-// 		"inputs": [
-// 			{
-// 				"internalType": "address",
-// 				"name": "account",
-// 				"type": "address"
-// 			}
-// 		],
-// 		"name": "OwnableUnauthorizedAccount",
-// 		"type": "error"
-// 	},
-// 	{
-// 		"anonymous": false,
-// 		"inputs": [
-// 			{
-// 				"indexed": true,
-// 				"internalType": "address",
-// 				"name": "user",
-// 				"type": "address"
-// 			},
-// 			{
-// 				"indexed": false,
-// 				"internalType": "uint256",
-// 				"name": "amount",
-// 				"type": "uint256"
-// 			}
-// 		],
-// 		"name": "Deposited",
-// 		"type": "event"
-// 	},
-// 	{
-// 		"anonymous": false,
-// 		"inputs": [
-// 			{
-// 				"indexed": true,
-// 				"internalType": "address",
-// 				"name": "token",
-// 				"type": "address"
-// 			},
-// 			{
-// 				"indexed": false,
-// 				"internalType": "uint256",
-// 				"name": "amount",
-// 				"type": "uint256"
-// 			}
-// 		],
-// 		"name": "Invested",
-// 		"type": "event"
-// 	},
-// 	{
-// 		"anonymous": false,
-// 		"inputs": [
-// 			{
-// 				"indexed": true,
-// 				"internalType": "address",
-// 				"name": "previousOwner",
-// 				"type": "address"
-// 			},
-// 			{
-// 				"indexed": true,
-// 				"internalType": "address",
-// 				"name": "newOwner",
-// 				"type": "address"
-// 			}
-// 		],
-// 		"name": "OwnershipTransferred",
-// 		"type": "event"
-// 	},
-// 	{
-// 		"anonymous": false,
-// 		"inputs": [
-// 			{
-// 				"indexed": true,
-// 				"internalType": "address",
-// 				"name": "user",
-// 				"type": "address"
-// 			},
-// 			{
-// 				"indexed": false,
-// 				"internalType": "uint256",
-// 				"name": "amount",
-// 				"type": "uint256"
-// 			}
-// 		],
-// 		"name": "Withdrawn",
-// 		"type": "event"
-// 	},
-// 	{
-// 		"inputs": [
-// 			{
-// 				"internalType": "address",
-// 				"name": "",
-// 				"type": "address"
-// 			}
-// 		],
-// 		"name": "balances",
-// 		"outputs": [
-// 			{
-// 				"internalType": "uint256",
-// 				"name": "",
-// 				"type": "uint256"
-// 			}
-// 		],
-// 		"stateMutability": "view",
-// 		"type": "function"
-// 	},
-// 	{
-// 		"inputs": [
-// 			{
-// 				"internalType": "uint256",
-// 				"name": "amount",
-// 				"type": "uint256"
-// 			}
-// 		],
-// 		"name": "deposit",
-// 		"outputs": [],
-// 		"stateMutability": "nonpayable",
-// 		"type": "function"
-// 	},
-// 	{
-// 		"inputs": [
-// 			{
-// 				"internalType": "uint256",
-// 				"name": "amount",
-// 				"type": "uint256"
-// 			}
-// 		],
-// 		"name": "invest",
-// 		"outputs": [],
-// 		"stateMutability": "nonpayable",
-// 		"type": "function"
-// 	},
-// 	{
-// 		"inputs": [],
-// 		"name": "invested",
-// 		"outputs": [
-// 			{
-// 				"internalType": "uint256",
-// 				"name": "",
-// 				"type": "uint256"
-// 			}
-// 		],
-// 		"stateMutability": "view",
-// 		"type": "function"
-// 	},
-// 	{
-// 		"inputs": [],
-// 		"name": "owner",
-// 		"outputs": [
-// 			{
-// 				"internalType": "address",
-// 				"name": "",
-// 				"type": "address"
-// 			}
-// 		],
-// 		"stateMutability": "view",
-// 		"type": "function"
-// 	},
-// 	{
-// 		"inputs": [],
-// 		"name": "renounceOwnership",
-// 		"outputs": [],
-// 		"stateMutability": "nonpayable",
-// 		"type": "function"
-// 	},
-// 	{
-// 		"inputs": [],
-// 		"name": "stablecoin",
-// 		"outputs": [
-// 			{
-// 				"internalType": "contract IERC20",
-// 				"name": "",
-// 				"type": "address"
-// 			}
-// 		],
-// 		"stateMutability": "view",
-// 		"type": "function"
-// 	},
-// 	{
-// 		"inputs": [],
-// 		"name": "totalPool",
-// 		"outputs": [
-// 			{
-// 				"internalType": "uint256",
-// 				"name": "",
-// 				"type": "uint256"
-// 			}
-// 		],
-// 		"stateMutability": "view",
-// 		"type": "function"
-// 	},
-// 	{
-// 		"inputs": [
-// 			{
-// 				"internalType": "address",
-// 				"name": "newOwner",
-// 				"type": "address"
-// 			}
-// 		],
-// 		"name": "transferOwnership",
-// 		"outputs": [],
-// 		"stateMutability": "nonpayable",
-// 		"type": "function"
-// 	},
-// 	{
-// 		"inputs": [],
-// 		"name": "uniswapRouter",
-// 		"outputs": [
-// 			{
-// 				"internalType": "contract IPool",
-// 				"name": "",
-// 				"type": "address"
-// 			}
-// 		],
-// 		"stateMutability": "view",
-// 		"type": "function"
-// 	},
-// 	{
-// 		"inputs": [
-// 			{
-// 				"internalType": "uint256",
-// 				"name": "amount",
-// 				"type": "uint256"
-// 			}
-// 		],
-// 		"name": "withdraw",
-// 		"outputs": [],
-// 		"stateMutability": "nonpayable",
-// 		"type": "function"
-// 	},
-// 	{
-// 		"inputs": [
-// 			{
-// 				"internalType": "uint256",
-// 				"name": "amount",
-// 				"type": "uint256"
-// 			}
-// 		],
-// 		"name": "withdrawInvest",
-// 		"outputs": [],
-// 		"stateMutability": "nonpayable",
-// 		"type": "function"
-// 	}
-// ];
 
 const TOKEN_ABI = [
 	{
@@ -862,14 +599,16 @@ class TokenManagerAgent {
 
 	async depositToken(tokenAddress: string, amount: string) {
 		// Example deposit logic (you may need to adjust for your contract)
-		const tx = await poolContract.deposit(amount );
+		console.log(amount)
+		const tx = await poolContract.deposit(amount);
 		await tx.wait();
 		console.log(`Deposited ${amount} USDT`);
 		console.log(`Depositing ${amount} for ${tokenAddress}`);
 	}
 
 	async withdrawToken(tokenAddress: string, amount: string) {
-		const tx = await this.contract.withdrawToken(tokenAddress, amount);
+		console.log(Number(amount))
+		const tx = await this.contract.withdraw( Number(amount));
 		await tx.wait();
 		console.log(`Withdrew ${amount} for ${tokenAddress}`);
 	}
@@ -954,6 +693,7 @@ class TradingSystem {
             const marketPredictionCap = data.marketPredictionCap[token];
 
             inputDict += ` For Token ${token}
+  - Token Name : ${token}
   - Sentiment Analysis: ${(sentiment * 100).toFixed(2)}% positive
   - Current Price: $${price}
   - Volume: ${volume}
@@ -966,11 +706,14 @@ class TradingSystem {
 
         inputDict += `
 Based on these conditions, which tokens should we trade and in what direction? Keep in mind the predicted values based on statistical models.
+PREDICTED PRICE IS FROM THE PREDICTION OF ARIMA MODEL , DO NOT RELY ON THAT COMPELTELY
 #OUTPUT FORMAT : 
             {
-                'crypto_name' : { 'action' : 'buy/sell', 'amount': 'value in range 1 to 100', 'reason' : 'logic behind your decision'},
+                'token_name' : { 'action' : 'buy/sell', 'amount': 'value in range 1 to 10', 'reason' : 'logic behind your decision'},
                 ...
             }
+
+			AMOUNT SHOULD BE A INTER VALUE
 STRICTLY FOLLOW THE OUTPUT FORMAT AND DO NOT RETURN ANYTHING ELSE. Insert the token names where relevant. Write crypto name in string.
 `;
         return inputDict;
@@ -1042,7 +785,7 @@ STRICTLY FOLLOW THE OUTPUT FORMAT AND DO NOT RETURN ANYTHING ELSE. Insert the to
 				console.log(amt)
 				console.log(rson)
                 
-                if (!taction || !['sell', 'buy'].includes(taction)) {
+                if (!taction || !['sell', 'buy', 'hold'].includes(taction)) {
                     throw new Error(`Invalid decision action for ${cryptoName}: ${taction}`);
                 }
                 
@@ -1072,7 +815,7 @@ STRICTLY FOLLOW THE OUTPUT FORMAT AND DO NOT RETURN ANYTHING ELSE. Insert the to
                     await this.tokenManager.depositToken(token, amount);
                     console.log(`✅ Deposited ${amount} for ${token}`);
                 } else if (tokenDecision === "sell") {
-                    await this.tokenManager.withdrawToken(token, amount);
+                    await this.tokenManager.depositToken(token, amount);
                     console.log(`✅ Withdrawn ${amount} for ${token}`);
                 } else {
                     console.log(`⚠️ No action for ${token} -  Decision: ${tokenDecision}`);
@@ -1118,13 +861,18 @@ STRICTLY FOLLOW THE OUTPUT FORMAT AND DO NOT RETURN ANYTHING ELSE. Insert the to
                 const data = [{
                     cryptocurrency_symbol: token,
                     decision: tradeAction,
-                    current_amount: amt,
+                    current_amount: Number(amt)*Number(1000000),
                     reason: reasons
                 }];
 
 				// console.log(data);
 
                 const dataWritten = await collection.writeToNodes(data);
+				const decryptedCollectionData = await collection.readFromNodes({});
+				console.log(
+					'Most recent records',
+					decryptedCollectionData
+				);
                 console.log(`✅ Trade executed and recorded for ${token}`);
             }
 
@@ -1145,7 +893,7 @@ async function initializeWardenAgent() {
         });
 
         const config = {
-            privateKeyOrAccount: CONFIG.PRIVATE_KEY
+            privateKeyOrAccount: `0x${process.env.PRIVATE_KEY}` as `0x${string}` || undefined,
         };
 
         const agentkit = new WardenAgentKit(config);
