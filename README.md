@@ -5,8 +5,13 @@
 ## Velox: AI-Driven DeFi System
 
 DeFi yield optimization is complex, requiring constant monitoring and manual intervention. 
-Velox is an AI-powered multi-agent DeFi system designed to optimize yield through dynamic token swaps, sentiment analysis, and intelligent fund redistribution across liquidity providers. By integrating Warden Protocol, Eigenlayer, Nillion, and The Graph, Velox ensures a secure, transparent, and efficient DeFi experience.To enhance user experience and enable faster access to on-chain data, we use The Graph Protocol instead of traditional on-chain data fetching methods. This approach significantly reduces latency, improves efficiency, and ensures seamless data retrieval.We use the Nillion Secret Vault to securely store LLM decisions and reasoning, protecting against cyber attacks and preventing the analysis of our agentic AI’s decision-making, which could pose a potential threat. Its robust encryption and user-friendly features help us achieve our goal of safeguarding AI decisions and reasoning.
+Velox is an AI-powered multi-agent DeFi system designed to optimize yield through dynamic token swaps, sentiment analysis, and intelligent fund redistribution across liquidity providers. 
+By integrating-
+- **The Graph** – To enhance user experience and optimize on-chain data access, we leverage The Graph Protocol instead of conventional data-fetching methods. This approach **minimizes latency, boosts efficiency, and enables seamless data retrieval**, ensuring a faster and more responsive user experience.
 
+- **Nillion Protocol** – We implement the **Nillion Secret Vault to securely store LLM decisions and reasoning**, safeguarding against cyber threats and unauthorized analysis. By leveraging its **advanced encryption and privacy-preserving technology**, we prevent potential exploitation of our AI's decision-making processes while maintaining a seamless and secure operational environment.
+
+- **EigenLayer AVS - eOracle** – To ensure real-time pricing data for Ethereum (ETH) and other tokens, we integrate the **EigenLayer AVS eOracle**. This solution provides **accurate and up-to-date pricing information**, enabling Velox to make informed trading decisions and optimize yield through AI-driven strategies.
 
 ## Architecture
 ![alt text](./assets/arch.png)
@@ -137,10 +142,19 @@ yarn dev
 yarn build
 ```
 
-#### Graph Setup
+#### The Graph
 
 Deployed subgraph link: https://api.studio.thegraph.com/query/103123/velox-graph/version/latest
 
 Refer this to create your own subgraph: https://thegraph.com/docs/en/
+
+### Nillion
+
+Refer schema: [/velox-ai/src/schema.json](./velox-ai/src/schema.json)
+
+### EigenLayer AVS - eOracle
+
+Refer https://docs.eoracle.io/docs/eoracle-price-feeds/feed-addresses
+
 
 Velox is now set up and ready to optimize yield through AI-powered DeFi trades!
