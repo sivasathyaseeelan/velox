@@ -14,7 +14,7 @@ By integrating-
 - **EigenLayer AVS - eOracle** – To ensure real-time pricing data for Ethereum (ETH) and other tokens, we integrate the **EigenLayer AVS eOracle**. This solution provides **accurate and up-to-date pricing information**, enabling Velox to make informed trading decisions and optimize yield through AI-driven strategies.
 
 ## Architecture
-![alt text](./assets/arch.png)
+![alt text](./assets/image.png)
 
 ## Features
 To automate the process of maximizing yields in liquidity pools analysis and make informed token buy/sell decisions, we introduce a multi-agent system. This system combines several autonomous agents, external data sources, and advanced models to assess market sentiment, perform technical analysis, and execute trades. Below are the key features we've integrated to ensure a comprehensive and efficient trading experience.
@@ -140,6 +140,20 @@ yarn dev
 
 # Build the frontend
 yarn build
+```
+
+```sh
+# Navigate to the Velox-Ai directory
+cd ./velox-ai
+
+# Install dependencies
+yarn
+
+# Start investing in Liquidity Pool
+yarn ts-node ./src/liquidity.ts
+
+# Start trading tokens
+yarn ts-node ./src/token.ts
 ```
 
 #### The Graph
