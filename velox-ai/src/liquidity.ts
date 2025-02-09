@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import dotenv from 'dotenv';
 import { orgConfig } from './nillionOrgConfig'
 import { SecretVaultWrapper } from './wrapper'
+import { nilql } from '@nillion/nilql';
 
 // =================== Warden Agent Kit Imports ===================
 import { WardenAgentKit } from "@wardenprotocol/warden-agent-kit-core";
@@ -18,7 +19,8 @@ dotenv.config();
 
 
 
-const SCHEMA_ID = process.env.SCHEMA_ID;
+const SCHEMA_ID = "a1fdeb83-9537-456d-a3f8-760574659c78";
+console.log(SCHEMA_ID)
 const USDC_TOKEN_ADDRESS = "0x94a9D9AC8a22534E3FaCa9F4e7F2E2cf85d5E4C8";
 const provider = new ethers.JsonRpcProvider("https://sepolia.infura.io/v3/a2e5985b83404b3ebe9ebfb7605e0af7");
 
@@ -748,6 +750,11 @@ const runLLMBasedSystem = async () => {
 	);
 	
 	await collection.init();
+
+	const secretKey = await nilql.ClusterKey.generate({ nodes: orgConfig.nodes }, {
+		store: true
+	  });
+
 	const decryptedCollectionData = await collection.readFromNodes({});
 				console.log(
 					'Most recent records',
@@ -767,14 +774,19 @@ const runLLMBasedSystem = async () => {
 			const temp_decision = JSON.parse(jsonMatch[0]); // Parse it into an object
 			for (const token in temp_decision) {
 				await handleLLMDecision(temp_decision[token]);
-				const data = [
+				const amm =  await nilql.encrypt(secretKey, (temp_decision[token]["amount"] * 1000000).toString())
+				const data = await [
 					{
 						cryptocurrency_symbol: token, // name will be encrypted to a $share
 						decision: temp_decision[token]["decision"], // years_in_web3 will be encrypted to a $share
-						current_amount: temp_decision[token]["amount"]*1000000,
+						current_amount:{
+							$share: amm
+						  },
 						reason: temp_decision[token]["reason"]
 					},
 				];
+
+				console.log(data)
 				const dataWritten = await collection.writeToNodes(data);
 				const newIds = [
 					...new Set(dataWritten.map((item) => item.result.data.created).flat()),

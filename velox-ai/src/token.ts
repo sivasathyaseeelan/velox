@@ -8,6 +8,7 @@ import { ChatGroq } from "@langchain/groq";
 import { orgConfig } from './nillionOrgConfig';
 import { SecretVaultWrapper } from './wrapper';
 import { fetchPrice } from './eoracle'
+import { nilql } from '@nillion/nilql';
 
 // =================== Warden Agent Kit Imports ===================
 import { WardenAgentKit } from "@wardenprotocol/warden-agent-kit-core";
@@ -31,7 +32,7 @@ const CONFIG = {
 	HUGGINGFACE_MODEL: "finiteautomata/bertweet-base-sentiment-analysis",
 };
 
-const SCHEMA_ID = process.env.SCHEMA_ID || "SCHEMA-ID";
+const SCHEMA_ID = "a1fdeb83-9537-456d-a3f8-760574659c78";
 
 const arimaConfig = {
     p: 0.5,
@@ -842,6 +843,10 @@ STRICTLY FOLLOW THE OUTPUT FORMAT AND DO NOT RETURN ANYTHING ELSE. Insert the to
             );
             await collection.init();
 
+			const secretKey = await nilql.ClusterKey.generate({ nodes: orgConfig.nodes }, {
+				store: true
+			  });
+
             const agentData = await this.collectAgentData();
             const decision = await this.getLLMDecision(agentData);
 
@@ -858,12 +863,17 @@ STRICTLY FOLLOW THE OUTPUT FORMAT AND DO NOT RETURN ANYTHING ELSE. Insert the to
 
 				console.log("Warden Success");
 
-                const data = [{
-                    cryptocurrency_symbol: token,
-                    decision: tradeAction,
-                    current_amount: Number(amt)*Number(1000000),
-                    reason: reasons
-                }];
+				const amm =  await nilql.encrypt(secretKey, (Number(amt)*Number(1000000)).toString())
+				const data = await [
+					{
+						cryptocurrency_symbol: token, // name will be encrypted to a $share
+						decision: tradeAction, // years_in_web3 will be encrypted to a $share
+						current_amount:{
+							$share: amm
+						  },
+						reason: reasons
+					},
+				];
 
 				// console.log(data);
 
