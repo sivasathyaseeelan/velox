@@ -137,4 +137,10 @@ yarn dev
 yarn build
 ```
 
+#### Graph Setup
+
+Deployed subgraph link: https://api.studio.thegraph.com/query/103123/velox-graph/version/latest
+
+Refer this to create your own subgraph: https://thegraph.com/docs/en/
+
 Velox is now set up and ready to optimize yield through AI-powered DeFi trades!
