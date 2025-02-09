@@ -5,7 +5,7 @@
 ## Velox: AI-Driven DeFi System
 
 DeFi yield optimization is complex, requiring constant monitoring and manual intervention. 
-Velox is an AI-powered multi-agent DeFi system designed to optimize yield through dynamic token swaps, sentiment analysis, and intelligent fund redistribution across liquidity providers. By integrating Warden Protocol, Eigenlayer, Nillion, and The Graph, Velox ensures a secure, transparent, and efficient DeFi experience.
+Velox is an AI-powered multi-agent DeFi system designed to optimize yield through dynamic token swaps, sentiment analysis, and intelligent fund redistribution across liquidity providers. By integrating Warden Protocol, Eigenlayer, Nillion, and The Graph, Velox ensures a secure, transparent, and efficient DeFi experience.To enhance user experience and enable faster access to on-chain data, we use The Graph Protocol instead of traditional on-chain data fetching methods. This approach significantly reduces latency, improves efficiency, and ensures seamless data retrieval.We use the Nillion Secret Vault to securely store LLM decisions and reasoning, protecting against cyber attacks and preventing the analysis of our agentic AI’s decision-making, which could pose a potential threat. Its robust encryption and user-friendly features help us achieve our goal of safeguarding AI decisions and reasoning.
 
 
 ## Architecture
